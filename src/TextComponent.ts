@@ -34,7 +34,6 @@ export default class TextComponent extends Component {
         this.lastText = this._text;
     }
     public $update(): void {
-
         if (this._text !== this.lastText) {
             this.draw(this._text);
             this.lastText = this._text;
@@ -52,11 +51,8 @@ export default class TextComponent extends Component {
         canvas.width = this.getAttribute("textureSize");
         canvas.height = this.getAttribute("textureSize");
         ctx.textBaseline = 'top';
-        //ctx.textAlign = 'center';
-
         ctx.font = this._fontSize + "px " + this._font;
         //ctx.fillStyle = 'rgb(255, 255, 255)';
-
 
         ctx.fillText(text, 0, 0);
         var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -98,11 +94,6 @@ export default class TextComponent extends Component {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.scale(canvas.width / textWidth, canvas.height / textHeight);
         ctx.fillText(text, 0, -firstRow);
-        //canvas.height = textHeight;
-        //  ctx.clearRect(0, 0, canvas.width, canvas.height);
-        //  ctx.fillText(text, canvas.width / 2, (canvas.height - textHeight) / 2);
-
-        //ctx.drawImage(canvas, canvas.width / 2, 0, canvas.width, canvas.height)
         this.node.setAttribute("texture", canvas, false);
         this.node.setAttribute("scale", this.normalize(textWidth, textHeight) + ",0");
     }
