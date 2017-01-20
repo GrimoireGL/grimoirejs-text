@@ -47,32 +47,52 @@ export default class TextComponent extends Component {
     private draw(text: string) {
         const canvas = document.createElement("canvas");
         var ctx = canvas.getContext('2d');
+        // const body = document.getElementsByName("body");
+        // document.body.appendChild(canvas)
         canvas.width = this.getAttribute("textureSize");
-        canvas.height = canvas.width;
-        ctx.textBaseline = 'middle';
-        ctx.textAlign = 'center';
+        canvas.height = this.getAttribute("textureSize");
+        ctx.textBaseline = 'top';
+        //ctx.textAlign = 'center';
 
         ctx.font = this._fontSize + "px " + this._font;
-        ctx.fillStyle = 'rgb(255, 255, 255)';
+        //ctx.fillStyle = 'rgb(255, 255, 255)';
 
 
-        ctx.fillText(text, canvas.width / 2, 0);
+        ctx.fillText(text, 0, 0);
         var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
         var data = pixels.data;
         var textHeight = 0;
+        var textWidth = 0;
         var currentRow = -1;
+        var currentCulumn = -1;
         for (var i = 0, len = data.length; i < len; i += 4) {
-            var r = data[i], g = data[i + 1], b = data[i + 2], alpha = data[i + 3];
+            const alpha = data[i + 3];
             if (alpha > 0) {
-                var row = Math.floor((i / 4) / canvas.width);
+                const row = Math.floor((i / 4) / canvas.width) + 1;
+                const culumn = (i / 4) % canvas.width + 1;
                 if (row > currentRow) {
                     currentRow = row;
-                    textHeight++;
+                    textHeight = row;
+                }
+                if (culumn > currentCulumn) {
+                    currentCulumn = culumn;
+                    textWidth = culumn;
                 }
             }
         }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillText(text, canvas.width / 2, (canvas.height - textHeight) / 2);
-        this.node.setAttribute("texture", canvas, false);
+        const canvas2 = document.createElement("canvas");
+        canvas2.setAttribute("width", String(textWidth));
+        canvas2.setAttribute("height", String(textWidth));
+        var ctx2 = canvas2.getContext('2d');
+        document.body.appendChild(canvas2)
+        ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height, 0, 0, canvas2.width, canvas2.height);
+        const texture = canvas2.toDataURL();
+        //canvas.height = textHeight;
+        //  ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //  ctx.fillText(text, canvas.width / 2, (canvas.height - textHeight) / 2);
+
+        //ctx.drawImage(canvas, canvas.width / 2, 0, canvas.width, canvas.height)
+        this.node.setAttribute("texture", texture, false);
+        //this.node.setAttribute("scale", this.normalize(textWidth, textHeight) + ",0");
     }
 }
