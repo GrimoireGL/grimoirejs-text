@@ -22,12 +22,21 @@ export default class TextComponent extends Component {
         fontSize: {
             default: 30,
             converter: "Number"
+        }, stroke: {
+            default: false,
+            converter: "Boolean"
+        },
+        reverse: {
+            default: false,
+            converter: "Boolean"
         }
     };
     private _text: string;
     private lastText: string;
     private _font: string;
     private _fontSize: number;
+    private _stroke: boolean;
+    private _reverse: boolean;
     public $awake(): void {
         this.__bindAttributes();
         this.draw(this._text);
@@ -93,8 +102,24 @@ export default class TextComponent extends Component {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.scale(canvas.width / textWidth, canvas.height / textHeight);
-        ctx.fillText(text, 0, -firstRow);
-        this.node.setAttribute("texture", canvas, false);
+
+        if (this._stroke == true) {
+            ctx.strokeText(text, 0, -firstRow);
+        } else {
+            ctx.fillText(text, 0, -firstRow);
+        }
+
+        ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+        canvas2.width = canvas.width;
+        canvas2.height = canvas.height;
+        ctx2.transform(-1, 0, 0, 1, canvas.width, 0);
+        ctx2.drawImage(canvas, 0, 0);
+
+        if (this._reverse == true) {
+            this.node.setAttribute("texture", canvas2, false);
+        } else {
+            this.node.setAttribute("texture", canvas, false);
+        }
         this.node.setAttribute("scale", this.normalize(textWidth, textHeight) + ",0");
     }
 }
