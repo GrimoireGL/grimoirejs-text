@@ -34,15 +34,10 @@ export default class TextComponent extends Component {
         this.lastText = this._text;
     }
     public $update(): void {
-
         if (this._text !== this.lastText) {
             this.draw(this._text);
             this.lastText = this._text;
         }
-    }
-    private normalize(x: number, y: number): string {
-        const r = Math.pow(10, Math.max(String(x).length, String(y).length) - 1);
-        return x / r + "," + y / r;
     }
     private draw(text: string) {
         const canvas = document.createElement("canvas");
@@ -51,20 +46,18 @@ export default class TextComponent extends Component {
         canvas.height = canvas.width;
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
-
         ctx.font = this._fontSize + "px " + this._font;
         ctx.fillStyle = 'rgb(255, 255, 255)';
 
-
         ctx.fillText(text, canvas.width / 2, 0);
-        var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        var data = pixels.data;
-        var textHeight = 0;
-        var currentRow = -1;
-        for (var i = 0, len = data.length; i < len; i += 4) {
+        const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = pixels.data;
+        let textHeight = 0;
+        let currentRow = -1;
+        for (let i = 0, len = data.length; i < len; i += 4) {
             var r = data[i], g = data[i + 1], b = data[i + 2], alpha = data[i + 3];
             if (alpha > 0) {
-                var row = Math.floor((i / 4) / canvas.width);
+                const row = Math.floor((i / 4) / canvas.width) + 1;
                 if (row > currentRow) {
                     currentRow = row;
                     textHeight++;
