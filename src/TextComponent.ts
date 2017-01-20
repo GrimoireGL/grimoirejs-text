@@ -47,8 +47,8 @@ export default class TextComponent extends Component {
     private draw(text: string) {
         const canvas = document.createElement("canvas");
         var ctx = canvas.getContext('2d');
-        // const body = document.getElementsByName("body");
-        // document.body.appendChild(canvas)
+        const body = document.getElementsByName("body");
+        document.body.appendChild(canvas)
         canvas.width = this.getAttribute("textureSize");
         canvas.height = this.getAttribute("textureSize");
         ctx.textBaseline = 'top';
@@ -65,11 +65,17 @@ export default class TextComponent extends Component {
         var textWidth = 0;
         var currentRow = -1;
         var currentCulumn = -1;
+        var firstRow;
+        var Flag = false;
         for (var i = 0, len = data.length; i < len; i += 4) {
             const alpha = data[i + 3];
             if (alpha > 0) {
                 const row = Math.floor((i / 4) / canvas.width) + 1;
                 const culumn = (i / 4) % canvas.width + 1;
+                if (Flag == false) {
+                    firstRow = row - 1;
+                    Flag = true;
+                }
                 if (row > currentRow) {
                     currentRow = row;
                     textHeight = row;
@@ -80,19 +86,24 @@ export default class TextComponent extends Component {
                 }
             }
         }
+        textHeight = textHeight - firstRow;
         const canvas2 = document.createElement("canvas");
         canvas2.setAttribute("width", String(textWidth));
-        canvas2.setAttribute("height", String(textWidth));
+        canvas2.setAttribute("height", String(textHeight));
         var ctx2 = canvas2.getContext('2d');
-        document.body.appendChild(canvas2)
-        ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height, 0, 0, canvas2.width, canvas2.height);
+        document.body.appendChild(canvas2);
+        ctx2.drawImage(canvas, 0, firstRow, canvas2.width, canvas2.height, 0, 0, canvas2.width, canvas2.height);
         const texture = canvas2.toDataURL();
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.scale(canvas.width / textWidth, canvas.height / textHeight);
+        ctx.fillText(text, 0, -firstRow);
         //canvas.height = textHeight;
         //  ctx.clearRect(0, 0, canvas.width, canvas.height);
         //  ctx.fillText(text, canvas.width / 2, (canvas.height - textHeight) / 2);
 
         //ctx.drawImage(canvas, canvas.width / 2, 0, canvas.width, canvas.height)
-        this.node.setAttribute("texture", texture, false);
-        //this.node.setAttribute("scale", this.normalize(textWidth, textHeight) + ",0");
+        this.node.setAttribute("texture", canvas, false);
+        this.node.setAttribute("scale", this.normalize(textWidth, textHeight) + ",0");
     }
 }
