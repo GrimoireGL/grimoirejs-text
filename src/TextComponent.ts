@@ -3,6 +3,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import TransformComponent from "grimoirejs-fundamental/ref/Components/TransformComponent";
 import Attribute from "grimoirejs/ref/Node/Attribute";
+import gr from "grimoirejs"
 export default class TextComponent extends Component {
 
     public static componentName: string = "TextComponent";
@@ -22,12 +23,17 @@ export default class TextComponent extends Component {
         fontSize: {
             default: 30,
             converter: "Number"
+        },
+        reverse: {
+            default: false,
+            converter: "Boolean"
         }
     };
     private _text: string;
     private lastText: string;
     private _font: string;
     private _fontSize: number;
+    private _reverse: boolean;
     public $awake(): void {
         this.__bindAttributes();
         this.draw(this._text);
@@ -48,7 +54,6 @@ export default class TextComponent extends Component {
         ctx.textAlign = 'center';
         ctx.font = this._fontSize + "px " + this._font;
         ctx.fillStyle = 'rgb(255, 255, 255)';
-
         ctx.fillText(text, canvas.width / 2, 0);
         const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = pixels.data;
@@ -66,6 +71,14 @@ export default class TextComponent extends Component {
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillText(text, canvas.width / 2, (canvas.height - textHeight) / 2);
-        this.node.setAttribute("texture", canvas, false);
+        const canvas2 = document.createElement("canvas");
+        canvas2.width = canvas.width;
+        canvas2.height = canvas.height;
+        var ctx2 = canvas2.getContext('2d');
+        ctx2.transform(-1, 0, 0, 1, canvas.width, 0);
+        ctx2.drawImage(canvas, 0, 0);
+        // document.body.appendChild(canvas2)
+        const texture = this._reverse ? canvas2 : canvas;
+        this.node.setAttribute("texture", texture, false);
     }
 }
