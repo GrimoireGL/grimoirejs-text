@@ -61,7 +61,8 @@ export default class TextComponent extends Component {
         canvas.height = this.getAttribute("textureSize");
         ctx.textBaseline = 'top';
         ctx.font = this._fontSize + "px " + this._font;
-        //ctx.fillStyle = 'rgb(255, 255, 255)';
+        // ctx.fillStyle = 'rgb(255, 255, 255)';
+        // ctx.strokeStyle = 'rgb(255, 255, 255)';
 
         ctx.fillText(text, 0, 0);
         var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -71,15 +72,19 @@ export default class TextComponent extends Component {
         var currentRow = -1;
         var currentCulumn = -1;
         var firstRow;
-        var Flag = false;
+        var firstCulumn;
         for (var i = 0, len = data.length; i < len; i += 4) {
             const alpha = data[i + 3];
             if (alpha > 0) {
                 const row = Math.floor((i / 4) / canvas.width) + 1;
                 const culumn = (i / 4) % canvas.width + 1;
-                if (Flag == false) {
+                if (currentRow == -1) {
                     firstRow = row - 1;
-                    Flag = true;
+                }
+                if (currentCulumn == -1) {
+                    firstCulumn = culumn - 1;
+                } else {
+                    firstCulumn = Math.min(firstCulumn, culumn - 1);
                 }
                 if (row > currentRow) {
                     currentRow = row;
@@ -92,19 +97,21 @@ export default class TextComponent extends Component {
             }
         }
         textHeight = textHeight - firstRow;
+        textWidth = textWidth - firstCulumn;
+        console.log(textWidth, ctx.measureText(text).width);
         const canvas2 = document.createElement("canvas");
         canvas2.setAttribute("width", String(textWidth));
         canvas2.setAttribute("height", String(textHeight));
         var ctx2 = canvas2.getContext('2d');
         document.body.appendChild(canvas2);
-        ctx2.drawImage(canvas, 0, firstRow, canvas2.width, canvas2.height, 0, 0, canvas2.width, canvas2.height);
+        ctx2.drawImage(canvas, firstCulumn, firstRow, canvas2.width, canvas2.height, 0, 0, canvas2.width, canvas2.height);
         const texture = canvas2.toDataURL();
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.scale(canvas.width / textWidth, canvas.height / textHeight);
 
         if (this._stroke == true) {
-            ctx.strokeText(text, 0, -firstRow);
+            ctx.strokeText(text, -firstCulumn, -firstRow);
         } else {
             ctx.fillText(text, 0, -firstRow);
         }
