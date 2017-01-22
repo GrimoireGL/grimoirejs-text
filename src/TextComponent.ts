@@ -113,7 +113,7 @@ export default class TextComponent extends Component {
         if (this._stroke == true) {
             ctx.strokeText(text, -firstCulumn, -firstRow);
         } else {
-            ctx.fillText(text, 0, -firstRow);
+            ctx.fillText(text, -firstCulumn, -firstRow);
         }
 
         ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
