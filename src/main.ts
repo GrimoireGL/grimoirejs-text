@@ -4,7 +4,6 @@ import TextComponent from './TextComponent';
 import matText from "raw!./text.sort";
 export default () => {
     gr.register(async () => {
-        console.log(matText);
         MaterialFactory.addSORTMaterial("text", matText);
         gr.registerComponent("Text", TextComponent);
         gr.registerNode("text", ["Text"], {
