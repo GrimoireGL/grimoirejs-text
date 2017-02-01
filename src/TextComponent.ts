@@ -3,6 +3,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import TransformComponent from "grimoirejs-fundamental/ref/Components/TransformComponent";
 import Attribute from "grimoirejs/ref/Node/Attribute";
+
 export default class TextComponent extends Component {
 
     public static componentName: string = "TextComponent";
@@ -15,54 +16,56 @@ export default class TextComponent extends Component {
         textureSize: {
             default: 256,
             converter: "Number"
-        }, font: {
+        },
+        font: {
             default: "Arial",
             converter: "String"
         },
         fontSize: {
             default: 30,
             converter: "Number"
-        }, stroke: {
-            default: false,
-            converter: "Boolean"
         },
-        reverse: {
+        stroke: {
             default: false,
             converter: "Boolean"
         }
     };
-    private _text: string;
+    private text: string;
     private lastText: string;
-    private _font: string;
-    private _fontSize: number;
-    private _stroke: boolean;
-    private _reverse: boolean;
+    private font: string;
+    private fontSize: number;
+    private stroke: boolean;
+    private textureSize: number;
+    private transform: TransformComponent;
+    private scale: Vector3;
     public $awake(): void {
         this.__bindAttributes();
-        this.draw(this._text);
-        this.lastText = this._text;
+        this.draw(this.text);
+        this.lastText = this.text;
     }
     public $update(): void {
-        if (this._text !== this.lastText) {
-            this.draw(this._text);
-            this.lastText = this._text;
+        if (this.text !== this.lastText) {
+            this.draw(this.text);
+            this.lastText = this.text;
         }
     }
-    private normalize(x: number, y: number): string {
+    private normalize(x: number, y: number, scale: Vector3): string {
         const r = Math.pow(10, Math.max(String(x).length, String(y).length) - 1);
-        return x / r + "," + y / r;
+        return x / r * scale.X + "," + y / r * scale.Y;
     }
     private draw(text: string) {
+        this.transform = this.node.getComponent("Transform") as TransformComponent;
+        this.scale = this.transform.localScale;
         const canvas = document.createElement("canvas");
         var ctx = canvas.getContext('2d');
-        const body = document.getElementsByName("body");
-        document.body.appendChild(canvas)
-        canvas.width = this.getAttribute("textureSize");
-        canvas.height = this.getAttribute("textureSize");
+        // const body = document.getElementsByTagName("body")[0];
+        // body.appendChild(canvas);
+        canvas.width = this.textureSize;
+        canvas.height = this.textureSize;
         ctx.textBaseline = 'top';
-        ctx.font = this._fontSize + "px " + this._font;
-        // ctx.fillStyle = 'rgb(255, 255, 255)';
-        // ctx.strokeStyle = 'rgb(255, 255, 255)';
+        ctx.font = this.fontSize + "px " + this.font;
+        ctx.fillStyle = 'rgb(255, 255, 255)';
+        ctx.strokeStyle = 'rgb(255, 255, 255)';
 
         ctx.fillText(text, 0, 0);
         var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -98,35 +101,28 @@ export default class TextComponent extends Component {
         }
         textHeight = textHeight - firstRow;
         textWidth = textWidth - firstCulumn;
-        console.log(textWidth, ctx.measureText(text).width);
         const canvas2 = document.createElement("canvas");
         canvas2.setAttribute("width", String(textWidth));
         canvas2.setAttribute("height", String(textHeight));
         var ctx2 = canvas2.getContext('2d');
-        document.body.appendChild(canvas2);
         ctx2.drawImage(canvas, firstCulumn, firstRow, canvas2.width, canvas2.height, 0, 0, canvas2.width, canvas2.height);
         const texture = canvas2.toDataURL();
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.scale(canvas.width / textWidth, canvas.height / textHeight);
 
-        if (this._stroke == true) {
+        if (this.stroke == true) {
             ctx.strokeText(text, -firstCulumn, -firstRow);
         } else {
             ctx.fillText(text, -firstCulumn, -firstRow);
         }
-
-        ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
-        canvas2.width = canvas.width;
-        canvas2.height = canvas.height;
-        ctx2.transform(-1, 0, 0, 1, canvas.width, 0);
-        ctx2.drawImage(canvas, 0, 0);
-
-        if (this._reverse == true) {
-            this.node.setAttribute("texture", canvas2, false);
-        } else {
-            this.node.setAttribute("texture", canvas, false);
-        }
-        this.node.setAttribute("scale", this.normalize(textWidth, textHeight) + ",0");
+        //
+        // ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+        // canvas2.width = canvas.width;
+        // canvas2.height = canvas.height;
+        // ctx2.transform(-1, 0, 0, 1, canvas.width, 0);
+        // ctx2.drawImage(canvas, 0, 0);
+        this.node.setAttribute("texture", canvas, false);
+        this.node.setAttribute("scale", this.normalize(textWidth, textHeight, this.scale) + ",0");
     }
 }
