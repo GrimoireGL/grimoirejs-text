@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "grimoirejs": "^0.13.5-beta5",
-    "grimoirejs-fundamental": "latest",
+    "grimoirejs-fundamental": "^0.11.1-beta17",
     "grimoirejs-math": "latest"
   },
   "devDependencies": {

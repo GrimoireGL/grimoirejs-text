@@ -1,0 +1,27 @@
+@Pass{
+  @Disable(CULL_FACE)
+  @BlendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA)
+  FS_PREC(mediump,float)
+  varying vec2 vUV;
+  #ifdef VS
+    attribute vec3 position;
+    attribute vec2 texCoord;
+
+    uniform mat4 _matPVM;
+
+    void main(){
+      gl_Position = _matPVM * vec4(position,1.0);
+      vUV = texCoord;
+    }
+  #endif
+
+  #ifdef FS
+  @{type:"color",default:"black"}
+    uniform vec4 color;
+    uniform sampler2D texture;
+
+    void main(){
+      gl_FragColor = color * texture2D(texture,vUV);
+    }
+  #endif
+}
