@@ -3,7 +3,7 @@
 var __VERSION__ = "1.0.0";
 var __NAME__ = "grimoirejs-text";
 
-import __MAIN__ from "./main"
+import __MAIN__ from "./main";
 
 var __EXPOSE__ = {
   "TextComponent": TextComponent
