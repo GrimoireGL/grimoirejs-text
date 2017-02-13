@@ -28,6 +28,10 @@ export default class TextComponent extends Component {
         back: {
             default: false,
             converter: "Boolean"
+        },
+        textAlign: {
+            default: "left",
+            converter: "String"
         }
     };
     private text: string;
@@ -35,6 +39,7 @@ export default class TextComponent extends Component {
     private size: number;
     private stroke: boolean;
     private back: boolean;
+    private textAlign: string;
     private transform: TransformComponent;
     private scale: Vector3;
     public $awake(): void {
@@ -117,11 +122,28 @@ export default class TextComponent extends Component {
             x: canvas.width / (length[0] * textLength),
             y: canvas.height / length[1]
         }
+        // ctx.lineWidth = 10;
+        // ctx.rect(0, 0, canvas.width, canvas.height);
+        // ctx.stroke();
         ctx.scale(magnification.x, magnification.y);
+        let startPosition = {
+            x: 0,
+            y: 0
+        };
+        ctx.textAlign = this.textAlign;
+        if (this.textAlign === 'center') {
+            startPosition.x = canvas.width / 4;
+            startPosition.y = 0;
+        }
+        //  else if (this.textAlign === 'right') {
+        //     console.warn();
+        //     startPosition.x = canvas.width / 2;
+        //     startPosition.y = 0;
+        // }
         if (this.stroke === true) {
-            ctx.strokeText(this.text, 0, 0);
+            ctx.strokeText(this.text, startPosition.x, startPosition.y);
         } else {
-            ctx.fillText(this.text, 0, 0);
+            ctx.fillText(this.text, startPosition.x, startPosition.y);
         }
         // const body = document.getElementsByTagName("body")[0];
         // body.appendChild(canvas);
