@@ -14,40 +14,50 @@ export default class TextComponent extends Component {
             converter: "String"
         },
         font: {
-            default: "",
+            default: "20px 'ＭＳ Ｐゴシック'",
             converter: "String"
         },
         stroke: {
             default: false,
             converter: "Boolean"
+        },
+        size: {
+            default: 1,
+            converter: "Number"
+        },
+        back: {
+            default: false,
+            converter: "Boolean"
         }
     };
     private text: string;
-    private lastText: string;
     private font: string;
+    private size: number;
     private stroke: boolean;
-    private textureSize: number;
+    private back: boolean;
     private transform: TransformComponent;
     private scale: Vector3;
-    public $mount(): void {
+    public $awake(): void {
         this.__bindAttributes();
-        this.draw(this.text);
-        this.lastText = this.text;
+        //TODO  Material:Disable(CULL_FACE)
+        // if (!this.back) {
+        //     this.node.setAttribute("material", "new(text)");
+        // }
     }
-    public $update(): void {
-        if (this.text !== this.lastText) {
-            this.draw(this.text);
-            this.lastText = this.text;
-        }
+    public $mount(): void {
+        this._draw(this.text);
+        this.getAttributeRaw('text').watch((attr) => {
+            this._draw(this.text);
+        });
     }
-    private measure(font: string): number[] {
+    private _measure(font: string, text: string): number[] {
         const canvas = document.createElement('canvas');
         var ctx = canvas.getContext('2d');
         ctx.textBaseline = 'top';
         ctx.font = font;
-        canvas.width = 256;
-        canvas.height = 256;
-        ctx.fillText("a", 0, 0);
+        Array.prototype.forEach.call(text, (s) => {
+            ctx.fillText(s, 0, 0);
+        });
         var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
         var data = pixels.data;
         var textHeight = 0;
@@ -79,32 +89,45 @@ export default class TextComponent extends Component {
                 }
             }
         }
-        textHeight = textHeight - firstRow;
-        textWidth = textWidth - firstCulumn;
-
+        textHeight = textHeight;
+        textWidth = textWidth;
         return [textWidth, textHeight];
     }
-    private draw(text: string) {
+    private _fixTextureSize(size: number): number {
+        let i = 1;
+        while (size > Math.pow(2, i)) {
+            i++;
+        }
+        return Math.pow(2, i);
+    }
+    private _draw(text: string) {
         this.transform = this.node.getComponent("Transform") as TransformComponent;
         this.scale = this.transform.localScale;
         const canvas = document.createElement("canvas");
+        const length = this._measure(this.font, this.text);
+        const textLength = this.text.length;
+        canvas.width = this._fixTextureSize(length[0] * textLength);
+        canvas.height = canvas.width;
         var ctx = canvas.getContext('2d');
-        canvas.width = this.textureSize;
-        canvas.height = this.textureSize;
         ctx.textBaseline = 'top';
         ctx.font = this.font;
-        console.log()
-        // ctx.fillStyle = 'rgb(255, 255, 255)';
-        // ctx.strokeStyle = 'rgb(255, 255, 255)';
-        const length = this.measure(this.font);
-        const textLength = this.text.length;
-        const d = Math.ceil(Math.pow(textLength, 0.5));
-        canvas.width = Math.max(length[0], length[1]) * d;
-        canvas.height = canvas.width;
-        const body = document.getElementsByTagName("body")[0];
-        body.appendChild(canvas);
-        for (let i = 0; i < textLength; i+=d) {
-            ctx.fillText(this.text, length[1] * i, 0);
+        ctx.fillStyle = 'rgb(255, 255, 255)';
+        ctx.strokeStyle = 'rgb(255, 255, 255)';
+        const magnification = {
+            x: canvas.width / (length[0] * textLength),
+            y: canvas.height / length[1]
         }
+        ctx.scale(magnification.x, magnification.y);
+        if (this.stroke === true) {
+            ctx.strokeText(this.text, 0, 0);
+        } else {
+            ctx.fillText(this.text, 0, 0);
+        }
+        // const body = document.getElementsByTagName("body")[0];
+        // body.appendChild(canvas);
+        const texture = canvas.toDataURL();
+        this.node.setAttribute("texture", texture);
+        const localSize = this.size * canvas.width / 100;
+        this.node.setAttribute("scale", [localSize / magnification.x, localSize / magnification.y, localSize], true);
     }
 }

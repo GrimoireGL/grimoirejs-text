@@ -1,6 +1,6 @@
   import TextComponent from "./TextComponent";
 
-var __VERSION__ = "1.0.0";
+var __VERSION__ = "0.0.0-development";
 var __NAME__ = "grimoirejs-text";
 
 import __MAIN__ from "./main";
