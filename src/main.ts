@@ -11,6 +11,6 @@ export default () => {
         gr.registerNode("text", ["Text"], {
             color: "black",
             material: "new(text)"
-        }, "mesh", ['scale']);
+        }, "mesh");
     });
 };
