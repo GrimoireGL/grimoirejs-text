@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-text",
-  "version": "0.0.0-development",
+  "version": "1.0.4",
   "description": "",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
@@ -27,12 +27,12 @@
     "condition-circle": "^1.5.0",
     "grimoirejs-cauldron": "^2.3.3",
     "raw-loader": "^0.5.1",
+    "semantic-release": "^6.3.2",
     "ts-loader": "^2.0.0",
     "typescript": "^2.1.6",
     "webpack": "^2.2.1",
     "webpack-shell-plugin": "^0.5.0",
-    "yargs": "^6.6.0",
-    "semantic-release": "^6.3.2"
+    "yargs": "^6.6.0"
   },
   "repository": {
     "type": "git",
