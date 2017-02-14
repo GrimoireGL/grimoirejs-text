@@ -39,10 +39,9 @@
     "url": "https://github.com/GrimoireGL/grimoirejs-text.git"
   },
   "scripts": {
-    "start": "webpack --watch --progress",
-    "prestart": "npm run prebuild",
+    "start": "npm run build && webpack --watch",
     "prepublish": "npm run build -- --env.prod",
-    "build": "webpack --progress",
+    "build": "webpack",
     "prebuild": "cauldron generate-exposure --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
     "postbuild": "cauldron generate-reference --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
