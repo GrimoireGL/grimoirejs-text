@@ -136,6 +136,6 @@ export default class TextComponent extends Component {
         const texture = canvas.toDataURL();
         this.node.setAttribute("texture", texture);
         const localSize = this.size * canvas.width / 100;
-        this.node.setAttribute("scale", [localSize / magnification.x, localSize / magnification.y, localSize], true);
+        this.node.setAttribute("scale", [localSize / magnification.x, localSize / magnification.y, 0.1], true);
     }
 }
