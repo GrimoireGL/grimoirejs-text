@@ -60,6 +60,7 @@ export default class TextComponent extends Component {
         var ctx = canvas.getContext('2d');
         ctx.textBaseline = 'top';
         ctx.font = font;
+        const t = text + "_";
         Array.prototype.forEach.call(text, (s) => {
             ctx.fillText(s, 0, 0);
         });
