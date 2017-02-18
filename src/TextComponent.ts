@@ -60,9 +60,10 @@ export default class TextComponent extends Component {
         var ctx = canvas.getContext('2d');
         ctx.textBaseline = 'top';
         ctx.font = font;
-        const t = text + "_";
+        const body = document.getElementsByTagName("body")[0];
+        body.appendChild(canvas);
         Array.prototype.forEach.call(text, (s) => {
-            ctx.fillText(s, 0, 0);
+            ctx.fillText(s + ".", 0, 0);
         });
         var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
         var data = pixels.data;
@@ -95,8 +96,6 @@ export default class TextComponent extends Component {
                 }
             }
         }
-        textHeight = textHeight;
-        textWidth = textWidth;
         return [textWidth, textHeight];
     }
     private _fixTextureSize(size: number): number {
@@ -117,8 +116,8 @@ export default class TextComponent extends Component {
         var ctx = canvas.getContext('2d');
         ctx.textBaseline = 'top';
         ctx.font = this.font;
-        ctx.fillStyle = 'rgb(255, 255, 255)';
-        ctx.strokeStyle = 'rgb(255, 255, 255)';
+        // ctx.fillStyle = 'rgb(255, 255, 255)';
+        // ctx.strokeStyle = 'rgb(255, 255, 255)';
         const magnification = {
             x: canvas.width / (length[0] * textLength),
             y: canvas.height / length[1]
@@ -132,8 +131,8 @@ export default class TextComponent extends Component {
         } else {
             ctx.fillText(this.text, this.offsetX, 0);
         }
-        // const body = document.getElementsByTagName("body")[0];
-        // body.appendChild(canvas);
+        const body = document.getElementsByTagName("body")[0];
+        body.appendChild(canvas);
         const texture = canvas.toDataURL();
         this.node.setAttribute("texture", texture);
         const localSize = this.size * canvas.width / 100;
