@@ -11,6 +11,7 @@
     "./src/**/*.ts"
   ],
   "files": [
+    "./src/index.ts",
     "./src/main.ts",
     "./src/raw.d.ts",
     "./src/TextComponent.ts"

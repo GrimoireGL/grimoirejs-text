@@ -60,8 +60,8 @@ export default class TextComponent extends Component {
         var ctx = canvas.getContext('2d');
         ctx.textBaseline = 'top';
         ctx.font = font;
-        const body = document.getElementsByTagName("body")[0];
-        body.appendChild(canvas);
+        // const body = document.getElementsByTagName("body")[0];
+        // body.appendChild(canvas);
         Array.prototype.forEach.call(text, (s) => {
             ctx.fillText(s + ".", 0, 0);
         });
@@ -131,8 +131,8 @@ export default class TextComponent extends Component {
         } else {
             ctx.fillText(this.text, this.offsetX, 0);
         }
-        const body = document.getElementsByTagName("body")[0];
-        body.appendChild(canvas);
+        // const body = document.getElementsByTagName("body")[0];
+        // body.appendChild(canvas);
         const texture = canvas.toDataURL();
         this.node.setAttribute("texture", texture);
         const localSize = this.size * canvas.width / 100;
