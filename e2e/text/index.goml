@@ -1,0 +1,6 @@
+<goml>
+    <scene>
+        <camera></camera>
+        <text text="grimoirejs-text!" color="green"></text>
+    </scene>
+</goml>

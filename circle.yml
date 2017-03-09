@@ -3,6 +3,7 @@ machine:
     version: 6.9.5
 
   post:
+    - sudo pip install awscli
     - curl -o- -L https://yarnpkg.com/install.sh | bash
 
 dependencies:
@@ -17,7 +18,8 @@ dependencies:
 
 test:
   post:
-    - sudo pip install awscli
+    - aws s3 cp $CIRCLE_ARTIFACTS/ s3://circleci-grimoire-e2e/ci/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM --recursive --acl public-read
+    - curl https://grimoire-e2e.herokuapp.com/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PREVIOUS_BUILD_NUM/$CIRCLE_BUILD_NUM
     - npm run semantic-release || true
   override:
-    - npm run build && npm test
+    - npm run build && npm test && npm run e2e-test
