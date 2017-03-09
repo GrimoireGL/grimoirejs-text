@@ -1,4 +1,4 @@
-<goml>
+<goml width="512" height="512">
     <scene>
         <camera></camera>
         <text text="grimoirejs-text!" color="green"></text>
