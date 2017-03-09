@@ -116,8 +116,8 @@ export default class TextComponent extends Component {
         var ctx = canvas.getContext('2d');
         ctx.textBaseline = 'top';
         ctx.font = this.font;
-        // ctx.fillStyle = 'rgb(255, 255, 255)';
-        // ctx.strokeStyle = 'rgb(255, 255, 255)';
+        ctx.fillStyle = 'rgb(255, 255, 255)';
+        ctx.strokeStyle = 'rgb(255, 255, 255)';
         const magnification = {
             x: canvas.width / (length[0] * textLength),
             y: canvas.height / length[1]
