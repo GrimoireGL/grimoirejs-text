@@ -13,7 +13,7 @@ const exportModule = {};
 for(let key of dirs){
   exportModule[key] = (client)=>{
     client
-        .url(`http://localhost:8080/e2e/${key}/index.html`).pause(1000).saveScreenshot(dir + `/${key}.png`).end();
+        .url(`http://localhost:8080/e2e/${key}/index.html`).pause(10000).saveScreenshot(dir + `/${key}.png`).end();
   };
 }
 module.exports = exportModule;
