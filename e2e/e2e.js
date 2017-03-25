@@ -14,7 +14,7 @@ for(let key of dirs){
   exportModule[key] = (client)=>{
     client
         .url(`http://localhost:8080/e2e/${key}/index.html`)
-        .waitForElementPresent(`canvas.gr-resource-loaded-canvas`,5000)
+        .waitForElementPresent(`canvas.gr-resource-loaded-canvas`,30000)
         .pause(100)
         .saveScreenshot(dir + `/${key}.png`).end();
   };
