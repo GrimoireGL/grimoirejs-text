@@ -14,8 +14,8 @@
     "grimoirejs"
   ],
   "dependencies": {
-    "grimoirejs": "^0.14.7",
-    "grimoirejs-fundamental": "^0.12.8",
+    "grimoirejs": "^0.15.0",
+    "grimoirejs-fundamental": "^0.14.2",
     "grimoirejs-math": "latest"
   },
   "devDependencies": {
@@ -36,7 +36,7 @@
     "typescript": "^2.1.6",
     "webpack": "^2.2.1",
     "webpack-shell-plugin": "^0.5.0",
-    "yargs": "^6.6.0"
+    "yargs": "^7.0.2"
   },
   "repository": {
     "type": "git",
@@ -49,7 +49,7 @@
     "prebuild": "cauldron generate-exposure --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
     "postbuild": "cauldron generate-reference --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "e2e-test":"hs & nightwatch"
+    "e2e-test": "hs & nightwatch"
   },
   "release": {
     "verifyConditions": "condition-circle"
