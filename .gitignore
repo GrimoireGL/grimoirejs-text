@@ -110,3 +110,4 @@ register
 lib-es5
 test-es5
 src/index.ts
+yarn.lock
