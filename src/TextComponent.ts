@@ -107,7 +107,7 @@ export default class TextComponent extends Component {
     }
     private _draw(text: string) {
         this.transform = this.node.getComponent("Transform") as TransformComponent;
-        this.scale = this.transform.localScale;
+        this.scale = this.transform.scale;
         const canvas = document.createElement("canvas");
         const length = this._measure(this.font, this.text);
         const textLength = this.text.length;
